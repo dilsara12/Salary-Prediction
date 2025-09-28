@@ -6,15 +6,13 @@ from typing import List
 
 st.set_page_config(page_title="AI Job Salary Predictor", page_icon="💼", layout="centered")
 
-# ------------------------------
-# Load artifacts (from pickle)
-# ------------------------------
+
 @st.cache_resource(show_spinner=False)
 def load_artifacts(path: str = "models_best_salary.pkl"):
     with open(path, "rb") as f:
         obj = pickle.load(f)
 
-    # If a raw estimator was saved by mistake, wrap it so app still runs
+    
     if hasattr(obj, "predict"):
         return {
             "best_model": obj,
@@ -29,7 +27,7 @@ def load_artifacts(path: str = "models_best_salary.pkl"):
     if not isinstance(obj, dict):
         raise TypeError("Unsupported pickle format. Expected dict or estimator.")
 
-    # Handle nested dict models like {'best_model': {'model': estimator}}
+    
     bm = obj.get("best_model")
     if isinstance(bm, dict):
         for k in ("model", "estimator", "pipe", "clf"):
@@ -37,7 +35,6 @@ def load_artifacts(path: str = "models_best_salary.pkl"):
                 obj["best_model"] = bm[k]
                 break
 
-    # Basic checks
     if not hasattr(obj.get("best_model", None), "predict"):
         raise ValueError("No estimator with .predict found in artifacts['best_model'].")
 
@@ -49,9 +46,7 @@ def load_artifacts(path: str = "models_best_salary.pkl"):
 
 A = load_artifacts("models_best_salary.pkl")
 
-# ------------------------------
-# Helpers: region + feature build
-# ------------------------------
+
 def to_region(cc: str) -> str:
     cc = str(cc).upper()
     AMER = {'US','CA','MX','BR','AR','CL'}
@@ -114,10 +109,7 @@ def predict_salary(X_one: pd.DataFrame) -> float:
         X_one = A["scaler_for_ridge"].transform(X_one)
     y = model.predict(X_one)
     return float(np.ravel(y)[0])
-
-# ------------------------------
-# UI
-# ------------------------------
+# Streamlit UI
 st.title("AI Job Salary Predictor")
 st.caption("Predict salaries for AI & Data roles using your trained model.")
 
