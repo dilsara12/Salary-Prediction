@@ -1,6 +1,6 @@
 # 💼 Salary Prediction Web App  
 
-![App Screenshot](screenshot.png)  
+![App Screenshot](Screenshot.png)  
 
 🔗 **Live Website:** [Click here to visit](https://housepricepredictionapp123.streamlit.app/)  
 
